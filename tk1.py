@@ -1,0 +1,41 @@
+import pandas as pd
+df=pd.read_csv(r"C:\Users\ADMIN\OneDrive\문서\internship\Tk3\CAvideos.csv")
+df.info()
+df.head()
+df.describe()
+df.isnull().sum()
+df["description"].fillna("No Description",inplace=True)
+df.info()
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12,8))
+plt.boxplot(df["likes"])
+plt.xlabel("Likes")
+plt.title("Likes")
+plt.show()
+numeric_cols=['category_id','views','likes','dislikes','comment_count']
+for col in numeric_cols:
+    Q1=df[col].quantile(0.25)
+    Q3=df[col].quantile(0.75)
+    IQR=Q3-Q1
+    outliers = df[(df[col] < Q1 - 1.5*IQR) | (df[col] > Q3 + 1.5*IQR)]
+    print(f"{col} outliers:{len(outliers)}")
+import warnings
+warnings.filterwarnings("ignore")
+top_tags = df.groupby("tags")["views"].sum().sort_values(ascending=False).head(10)
+plt.figure(figsize=(12,8))
+plt.barh(top_tags.index,top_tags.values,color="green")
+plt.xlabel("views")
+plt.ylabel("tags")
+plt.title("Top 10 most viewd tags")
+plt.show()
+plt.figure(figsize=(12,8))
+plt.boxplot(df["category_id"])
+plt.xlabel("category_id")
+plt.title("Category of video")
+plt.show()
+plt.figure(figsize=(12,8))
+plt.scatter(df["likes"],df["dislikes"],alpha=0.3)
+plt.xlabel("likes")
+plt.ylabel("dislikes")
+plt.title("likes vs dislikes ")
+plt.show()
